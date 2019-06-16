@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="最近发现ansible挺好用的，简单做下笔记。  默认通过SSH协议管理机器 不用在远程机器安装软件 快速上手 可以使用非root用户   安装RHEL and CentOS:$ sudo yum install ansibleFedora:$ sudo dnf install ansiblePython-Pip:$ sudo pip install ansible">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ansible 笔记">
+<meta property="og:url" content="http://sszgr.com/2019/06/16/ansible/index.html">
+<meta property="og:site_name" content="碎">
+<meta property="og:description" content="最近发现ansible挺好用的，简单做下笔记。  默认通过SSH协议管理机器 不用在远程机器安装软件 快速上手 可以使用非root用户   安装RHEL and CentOS:$ sudo yum install ansibleFedora:$ sudo dnf install ansiblePython-Pip:$ sudo pip install ansible">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-06-16T15:28:10.996Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ansible 笔记">
+<meta name="twitter:description" content="最近发现ansible挺好用的，简单做下笔记。  默认通过SSH协议管理机器 不用在远程机器安装软件 快速上手 可以使用非root用户   安装RHEL and CentOS:$ sudo yum install ansibleFedora:$ sudo dnf install ansiblePython-Pip:$ sudo pip install ansible">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://sszgr.com/2019/06/16/ansible/">
+
+
+
+
+
+  <title>ansible 笔记 | 碎</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">碎</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-bookmarks">
+          <a href="/bookmarks/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-bookmark"></i> <br>
+            
+            书签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sszgr.com/2019/06/16/ansible/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="碎、">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="碎">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ansible 笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-16T14:19:28+00:00">
+                2019-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>最近发现ansible挺好用的，简单做下笔记。</p>
+<ul>
+<li>默认通过SSH协议管理机器</li>
+<li>不用在远程机器安装软件</li>
+<li>快速上手</li>
+<li>可以使用非root用户</li>
+</ul>
+</blockquote>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>RHEL and CentOS:<br><code>$ sudo yum install ansible</code><br>Fedora:<br><code>$ sudo dnf install ansible</code><br>Python-Pip:<br><code>$ sudo pip install ansible</code></p>
+<a id="more"></a>
+
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>安装完成后的默认配置目录为<code>/etc/ansible/</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ls /etc/ansible/</span></span><br><span class="line">ansible.cfg  hosts  roles</span><br></pre></td></tr></table></figure>
+
+<h2 id="ansible-cfg"><a href="#ansible-cfg" class="headerlink" title="- ansible.cfg"></a>- ansible.cfg</h2><p>ansible的配置文件，可以对一些默认行为进行修改<br>读取顺序如下（版本&gt;1.5）:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">* ANSIBLE_CONFIG (一个环境变量)</span><br><span class="line">* ansible.cfg (位于当前目录中)</span><br><span class="line">* .ansible.cfg (位于家目录中)</span><br><span class="line">* /etc/ansible/ansible.cfg</span><br></pre></td></tr></table></figure>
+
+<p>常用修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1. ask_pass/ask_sudo_pass = False</span><br><span class="line">修改是否弹出密码询问，当没有配置任何目标主机相关的信息时进行密码输入提示</span><br><span class="line"></span><br><span class="line">2. remote_port remote_user</span><br><span class="line">默认是SSH端口和用户，如不指定则使用当前用户</span><br><span class="line"></span><br><span class="line">3. remote_tmp = `$HOME/.ansible/tmp`</span><br><span class="line">远程传输脚本存放地址</span><br><span class="line"></span><br><span class="line">4. sudo_user = root</span><br><span class="line">默认的sudo用户，或者通过--sudo-user/--sudo指定使用</span><br><span class="line"></span><br><span class="line">5. timeout = 10</span><br><span class="line">默认SSH尝试连接的超时时间</span><br><span class="line"></span><br><span class="line">6. ssh_args</span><br><span class="line">设置SSH参数</span><br><span class="line"></span><br><span class="line">7. scp_if_ssh</span><br><span class="line">使用scp代替sftp进行文件传输</span><br><span class="line"></span><br><span class="line">8. host_key_checking</span><br><span class="line">是否检测主机密钥</span><br></pre></td></tr></table></figure>
+
+<h2 id="hosts"><a href="#hosts" class="headerlink" title="- hosts"></a>- hosts</h2><p>主机仓库配置文件，配置文件结构类似INI</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 分组名，后面使用ansible可以指定某一个组</span></span><br><span class="line"><span class="section">[webs]</span></span><br><span class="line"><span class="comment"># 主机名</span></span><br><span class="line">one.example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以指定端口</span></span><br><span class="line">two.example.com:6666</span><br><span class="line">three.example.com   ansible_ssh_port=2222</span><br><span class="line"></span><br><span class="line"><span class="comment"># 相似或连续的主机名，下面表示从web-a到web-f</span></span><br><span class="line">web-[a:f].example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 连续数字，下面标识从web-1到web-10</span></span><br><span class="line">web-[1:10].example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以对每个host指定连接配置</span></span><br><span class="line">localhost   ansible_connection=local</span><br><span class="line">other1.example.com  ansible_connection=ssh  ansible_ssh_user=hahaha</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用IP地址</span></span><br><span class="line">192.168.1.56</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用连续IP地址</span></span><br><span class="line">192.168.1.[10:20]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置组内通用变量</span></span><br><span class="line"><span class="section">[webs:vars]</span></span><br><span class="line"><span class="attr">ansible_ssh_port</span>=<span class="number">2222</span></span><br><span class="line"><span class="attr">ntp_server</span>=<span class="number">0</span>.asia.pool.ntp.org</span><br></pre></td></tr></table></figure>
+
+<p>常用参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">ansible_ssh_host</span><br><span class="line">    连接的远程主机名</span><br><span class="line">ansible_ssh_port</span><br><span class="line">    ssh端口</span><br><span class="line">ansible_ssh_user</span><br><span class="line">    ssh用户名</span><br><span class="line">ansible_ssh_pass</span><br><span class="line">    ssh密码，建议使用--ask-pass指定或者使用SSH密钥</span><br><span class="line">ansible_ssh_exe</span><br><span class="line">    sudo命令的路径</span><br><span class="line">ansible_connection</span><br><span class="line">    链接类型，local ssh paramiko smart（默认）</span><br><span class="line">ansible_ssh_private_key_file</span><br><span class="line">    ssh密钥文件</span><br><span class="line">    扩展：</span><br><span class="line">        生成密钥命令 ssh-keygen</span><br><span class="line">        ssh-keygen -t rsa -C ss</span><br><span class="line">        配置密钥登录到远程主机 ssh-copy-id</span><br><span class="line">        ssh-copy-id root@sszgr.com</span><br><span class="line">ansible_shell_type</span><br><span class="line">    目标系统的shell类型，默认使用sh，可以设置csh fish</span><br><span class="line">ansible_python_interpreter</span><br><span class="line">    目标主机的python路径</span><br></pre></td></tr></table></figure>
+
+<h1 id="命令（ad-hoc）"><a href="#命令（ad-hoc）" class="headerlink" title="命令（ad-hoc）"></a>命令（ad-hoc）</h1><p>ansible提供了多种交互模式可供选择，用于解决一些简单的任务。如果满足不了需求，也可以自己编写<code>ansible playbook</code>脚本来解决，ansible默认使用command模块</p>
+<p>ansible常用命令格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">ansible &lt;host-pattern&gt; [options]</span><br><span class="line">ansible &lt;host-pattern&gt; -m &lt;module-name&gt; -a &lt;module-args&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行多个组</span></span><br><span class="line">ansible webs:dbs ..</span><br><span class="line"></span><br><span class="line"><span class="comment"># 排除组，所有机器在webs组同时不在dbs组</span></span><br><span class="line">ansible webs:!dbs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定组交集，同时属于webs组和dbs组</span></span><br><span class="line">ansible webs:&amp;dbs</span><br><span class="line"></span><br><span class="line"><span class="comment"># 自由组合</span></span><br><span class="line">ansible webs:dbs:&amp;stag:!pho</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定组内某个机器或多个机器</span></span><br><span class="line">ansible webs[0]</span><br><span class="line">ansible webs[0-10]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 直接指定机器</span></span><br><span class="line">ansible all -i IP</span><br><span class="line">ansible all -i IP,IP1,IP2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看可用模块</span></span><br><span class="line">ansible-doc -l</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看模块详细用户</span></span><br><span class="line">ansible-doc -s model_name</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用模块"><a href="#常用模块" class="headerlink" title="常用模块"></a>常用模块</h2><h3 id="ping"><a href="#ping" class="headerlink" title="ping"></a>ping</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ansible webs -m ping</span><br></pre></td></tr></table></figure>
+
+<h3 id="command"><a href="#command" class="headerlink" title="command"></a>command</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认模块，执行命令操作，不解释特殊字符</span></span><br><span class="line">ansible webs -a date</span><br><span class="line">ansible webs -m <span class="built_in">command</span> -a <span class="string">"pwd"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 执行命令操作，已shell解释器进行命令执行</span></span><br><span class="line">ansible webs -m shell -a <span class="string">"ip r |grep 10.255"</span></span><br><span class="line">ansible webs -m shell -a <span class="string">"echo newpwd| passwd --stdin user"</span></span><br><span class="line">ansible webs -m shell -a <span class="string">"cat /etc/passwd"</span> --sudo -u ss</span><br></pre></td></tr></table></figure>
+
+<h3 id="copy"><a href="#copy" class="headerlink" title="copy"></a>copy</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 文件上传模块</span></span><br><span class="line"><span class="comment"># 将本地的test.txt传输到远程/root目录下</span></span><br><span class="line">ansible webs -m copy -a <span class="string">"src=/root/test.txt dest=/root/test.txt"</span></span><br><span class="line">ansible webs -m copy -a <span class="string">"src=/root/test.txt dest=/root/test.txt mode=600"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="script"><a href="#script" class="headerlink" title="script"></a>script</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 将本地脚本放到远程主机上执行</span></span><br><span class="line">ansible webs -m script -a <span class="string">"/root/test.sh"</span></span><br><span class="line"><span class="comment"># 更改执行目录</span></span><br><span class="line">ansible webs -m script -a <span class="string">"/root/test.sh chdir=/home"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="service"><a href="#service" class="headerlink" title="service"></a>service</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 服务管理模块</span></span><br><span class="line"><span class="comment"># 更改服务的状态（reloaded, restarted, started, stopped）</span></span><br><span class="line">ansible webs -m service -a <span class="string">"name=httpd state=started"</span></span><br><span class="line">ansible webs -m service -a <span class="string">"name=httpd enabled=true"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="yum-apt"><a href="#yum-apt" class="headerlink" title="yum/apt"></a>yum/apt</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 包管理模块，一般还是习惯将包都下载到本地，在远程传输到目标机器进行安装</span></span><br><span class="line"><span class="comment"># 确认包的状态（absent, installed, latest, present, removed）</span></span><br><span class="line"><span class="comment"># 确认是否安装</span></span><br><span class="line">ansible webs -m yum -a <span class="string">"name=httpd state=present"</span></span><br><span class="line"><span class="comment"># 下载软件包</span></span><br><span class="line">ansible webs -m yum -a <span class="string">"name=httpd download_only=true"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="cron"><a href="#cron" class="headerlink" title="cron"></a>cron</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计划任务管理模块</span></span><br><span class="line"><span class="comment"># 创建计划任务</span></span><br><span class="line"><span class="comment"># backup</span></span><br><span class="line"><span class="comment"># state (present/absent)</span></span><br><span class="line"><span class="comment"># cron_file</span></span><br><span class="line"><span class="comment"># minute hour day month weekday job</span></span><br><span class="line">ansible webs -m cron -a <span class="string">'name=test job="/bin/date" day="*/1" state=present'</span></span><br><span class="line">ansible webs -m cron -a <span class="string">"name=test state=absent"</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h1><p><a href="https://github.com/ansible/ansible" target="_blank" rel="noopener">GitHub</a><br><a href="https://docs.ansible.com/" target="_blank" rel="noopener">官方文档</a><br><a href="https://ansible-tran.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">中文指南</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.jpg" alt="碎、">
+            
+              <p class="site-author-name" itemprop="name">碎、</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/sszgr" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ansible-cfg"><span class="nav-number">2.1.</span> <span class="nav-text">- ansible.cfg</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hosts"><span class="nav-number">2.2.</span> <span class="nav-text">- hosts</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令（ad-hoc）"><span class="nav-number">3.</span> <span class="nav-text">命令（ad-hoc）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用模块"><span class="nav-number">3.1.</span> <span class="nav-text">常用模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ping"><span class="nav-number">3.1.1.</span> <span class="nav-text">ping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#command"><span class="nav-number">3.1.2.</span> <span class="nav-text">command</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shell"><span class="nav-number">3.1.3.</span> <span class="nav-text">shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#copy"><span class="nav-number">3.1.4.</span> <span class="nav-text">copy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#script"><span class="nav-number">3.1.5.</span> <span class="nav-text">script</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service"><span class="nav-number">3.1.6.</span> <span class="nav-text">service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yum-apt"><span class="nav-number">3.1.7.</span> <span class="nav-text">yum/apt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cron"><span class="nav-number">3.1.8.</span> <span class="nav-text">cron</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关链接"><span class="nav-number">4.</span> <span class="nav-text">相关链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">碎、</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
